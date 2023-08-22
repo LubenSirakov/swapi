@@ -1,24 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
 
-function App() {
+import { RootState } from './store';
+import Search from './components/Search';
+import Person from './components/Person';
+import Alert from './components/Alert';
+import { setAlert } from './store/actions/alertActions';
+import { setError } from './store/actions/personActions';
+
+const App: FC = () => {
+  const dispatch = useDispatch();
+  const personData = useSelector((state: RootState) => state.person.data);
+  const loading = useSelector((state: RootState) => state.person.loading);
+  const error = useSelector((state: RootState) => state.person.error);
+  const alertMessage = useSelector((state: RootState) => state.alert.message);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Search title='Enter a name and press Search' />
+      {loading ? <h2 id="infoSection">Loading from a galxy far far away...</h2> : personData && <Person data={personData} />}
+
+      {alertMessage && <Alert message={alertMessage} onClose={() => dispatch(setAlert(''))} />}
+      {error && <Alert message={error} onClose={() => dispatch(setError(  ))} />}
     </div>
   );
 }
